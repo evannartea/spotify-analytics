@@ -1,5 +1,7 @@
 import glob
 import pandas as pd
+import psycopg2
+from sqlalchemy import create_engine
 
 file_name = "Streaming_History_Audio_*.json"
 
@@ -16,10 +18,21 @@ df["ts"] = pd.to_datetime(
     utc=True
 )
 
-# Extract year
+# Extract year from timestamp
 df["year"] = df["ts"].dt.year
 
-# Extract minutes played
+# Create minutes played
 df["mins_played"] = df["ms_played"] / 60000
 
-print(df)
+#print(df)
+
+# Connect to PostgreSQL
+engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/spotify_analytics")
+
+# Export DataFrame to PostgreSQL
+df.to_sql(
+    name="streaming_history",
+    con=engine, 
+    if_exists="replace",
+    index=False
+)
