@@ -5,42 +5,57 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
-load_dotenv
 
-database_url = os.getenv("DATABASE_URL")
-file_name = "Streaming_History_Audio_*.json"
+def load_data():
+    dataframes = []
 
-df = pd.DataFrame()
+    for file in glob.glob("data/Streaming_History_Audio_*.json"):
+        dataframes.append(pd.read_json(file))
 
-for file in glob.glob("data/" + file_name):
-    temp = pd.read_json(file)
-    df = pd.concat([df, temp])
+    return pd.concat(dataframes, ignore_index=True)
 
-# Convert timestamp to datetime
-df["ts"] = pd.to_datetime(
-    df["ts"],
-    format="%Y-%m-%dT%H:%M:%SZ",
-    utc=True
-)
 
-# Extract year from timestamp
-df["year_played"] = df["ts"].dt.year
+def clean_data(df):
+    # Convert timestamp to datetime
+    df["ts"] = pd.to_datetime(
+        df["ts"],
+        format="%Y-%m-%dT%H:%M:%SZ",
+        utc=True
+    )
 
-#Extract month from timestamp
-df["month_played"] = df["ts"].dt.month
+    # Extract year from timestamp
+    df["year_played"] = df["ts"].dt.year
 
-# Create minutes played
-df["mins_played"] = df["ms_played"] / 60000
+    #Extract month from timestamp
+    df["month_played"] = df["ts"].dt.month
 
-#print(df)
+    # Create minutes played
+    df["mins_played"] = df["ms_played"] / 60000
 
-# Connect to PostgreSQL
-engine = create_engine(database_url)
+    return df
 
-# Export DataFrame to PostgreSQL
-df.to_sql(
-    name="streaming_history",
-    con=engine, 
-    if_exists="replace",
-    index=False
-)
+
+def export_to_db(df, database_url):
+    # Connect to PostgreSQL
+    engine = create_engine(database_url)
+
+    # Export DataFrame to PostgreSQL
+    df.to_sql(
+        name="streaming_history",
+        con=engine, 
+        if_exists="replace",
+        index=False
+    )
+
+
+def main():
+    load_dotenv()
+
+    database_url = os.getenv("DATABASE_URL")
+    df = load_data()
+    df_clean = clean_data(df)
+
+    export_to_db(df_clean, database_url)
+
+if __name__ == "__main__":
+    main()
