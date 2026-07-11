@@ -14,23 +14,33 @@ SELECT
 	reason_end, 
 	shuffle, 
 	skipped, 
-	year_played,
-    month_played, 
 	mins_played
 FROM public.streaming_history
 ORDER BY ts ASC;
 
 -- WARHOUSE
--- Create artist dim
-DROP TABLE IF EXISTS warehouse.dim_artist;
+-- Create date dim
+DROP TABLE IF EXISTS warehouse.dim_date;
 
-CREATE TABLE warehouse.dim_artist AS
-SELECT
-	ROW_NUMBER() OVER(ORDER BY artist_name) AS artist_key,
-	artist_name
-FROM (
-	SELECT DISTINCT
-		artist_name
-	FROM staging.spotify_streams
-) ar;
+CREATE TABLE warehouse.dim_date (
+	date_id INT PRIMARY KEY,
+	full_date DATE UNIQUE NOT NULL,
+	year INT NOT NULL,
+	month INT NOT NULL,
+	day INT NOT NULL
+);
 
+INSERT INTO warehouse.dim_date (
+    date_id,
+    full_date,
+    year,
+    month,
+    day
+)
+SELECT DISTINCT
+    TO_CHAR(date_played::date, 'YYYYMMDD')::INT AS date_id,
+    date_played::date AS full_date,
+    EXTRACT(YEAR FROM date_played)::INT AS year,
+    EXTRACT(MONTH FROM date_played)::INT AS month,
+    EXTRACT(DAY FROM date_played)::INT AS day
+FROM staging.spotify_streams;
