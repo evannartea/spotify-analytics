@@ -44,3 +44,48 @@ SELECT DISTINCT
     EXTRACT(MONTH FROM date_played)::INT AS month,
     EXTRACT(DAY FROM date_played)::INT AS day
 FROM staging.spotify_streams;
+
+-- Create track dim
+DROP TABLE IF EXISTS warehouse.dim_track;
+
+CREATE TABLE warehouse.dim_track (
+	track_id SERIAL PRIMARY KEY,
+	track_name VARCHAR(255),
+	artist_name VARCHAR(255),
+	album_name VARCHAR (255),
+
+	UNIQUE(
+		track_name,
+		artist_name,
+		album_name
+	)
+);
+
+INSERT INTO warehouse.dim_track (
+	track_name,
+	artist_name,
+	album_name
+)
+SELECT DISTINCT
+	track_name,
+	artist_name,
+	album_name
+FROM staging.spotify_streams
+ORDER BY artist_name, album_name, track_name;
+
+-- Create country dim
+DROP TABLE IF EXISTS warehouse.dim_country;
+
+CREATE TABLE warehouse.dim_country (
+	country_id SERIAL PRIMARY KEY,
+	country_code VARCHAR(10) UNIQUE NOT NULL
+);
+
+INSERT INTO warehouse.dim_country(
+	country_code
+)
+SELECT DISTINCT
+	country
+FROM staging.spotify_streams
+ORDER BY country;
+
