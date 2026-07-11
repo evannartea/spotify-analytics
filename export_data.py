@@ -8,8 +8,9 @@ from sqlalchemy import create_engine
 
 def load_data():
     dataframes = []
+    files = glob.glob("data/Streaming_History_Audio_*.json")
 
-    for file in glob.glob("data/Streaming_History_Audio_*.json"):
+    for file in files:
         dataframes.append(pd.read_json(file))
 
     return pd.concat(dataframes, ignore_index=True)
