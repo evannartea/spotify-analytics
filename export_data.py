@@ -1,7 +1,6 @@
+import os
 import glob
 import pandas as pd
-import psycopg2
-import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
@@ -41,7 +40,6 @@ def export_to_db(df, database_url):
         if_exists="replace",
         index=False
     )
-
 
 def main():
     load_dotenv()
