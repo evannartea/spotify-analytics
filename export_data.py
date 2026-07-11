@@ -24,12 +24,6 @@ def clean_data(df):
         utc=True
     )
 
-    # Extract year from timestamp
-    df["year_played"] = df["ts"].dt.year
-
-    #Extract month from timestamp
-    df["month_played"] = df["ts"].dt.month
-
     # Create minutes played
     df["mins_played"] = df["ms_played"] / 60000
 
