@@ -1,9 +1,13 @@
 import glob
 import pandas as pd
 import psycopg2
-import requests
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
+load_dotenv
+
+database_url = os.getenv("DATABASE_URL")
 file_name = "Streaming_History_Audio_*.json"
 
 df = pd.DataFrame()
@@ -31,7 +35,7 @@ df["mins_played"] = df["ms_played"] / 60000
 #print(df)
 
 # Connect to PostgreSQL
-engine = create_engine("postgresql+psycopg2://postgres:postgres@localhost:5432/spotify_analytics")
+engine = create_engine(database_url)
 
 # Export DataFrame to PostgreSQL
 df.to_sql(
