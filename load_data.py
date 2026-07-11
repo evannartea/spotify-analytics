@@ -1,6 +1,7 @@
 import glob
 import pandas as pd
 import psycopg2
+import requests
 from sqlalchemy import create_engine
 
 file_name = "Streaming_History_Audio_*.json"
@@ -19,7 +20,10 @@ df["ts"] = pd.to_datetime(
 )
 
 # Extract year from timestamp
-df["year"] = df["ts"].dt.year
+df["year_played"] = df["ts"].dt.year
+
+#Extract month from timestamp
+df["month_played"] = df["ts"].dt.month
 
 # Create minutes played
 df["mins_played"] = df["ms_played"] / 60000
