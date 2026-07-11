@@ -1,0 +1,28 @@
+SELECT ts, 
+		--platform, 
+		ms_played, 
+		conn_country, 
+		--ip_addr, 
+		master_metadata_track_name, 
+		master_metadata_album_artist_name, 
+		master_metadata_album_album_name, 
+		--spotify_track_uri, 
+		--episode_name, 
+		--episode_show_name, 
+		--spotify_episode_uri, 
+		--audiobook_title, 
+		--audiobook_uri, 
+		--audiobook_chapter_uri, 
+		--audiobook_chapter_title, 
+		reason_start, 
+		reason_end, 
+		shuffle, 
+		skipped, 
+		--offline, 
+		--offline_timestamp, 
+		--incognito_mode, 
+		year, 
+		mins_played
+FROM public.streaming_history
+ORDER BY ts ASC;
+	
