@@ -1,4 +1,4 @@
--- STAGING SCHEMA
+-- STAGING
 -- Filter raw data
 DROP TABLE IF EXISTS staging.spotify_streams;
 
