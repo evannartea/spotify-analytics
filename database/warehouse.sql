@@ -1,4 +1,4 @@
--- WARHOUSE
+-- WAREHOUSE SCHEMA
 -- Create date dim
 DROP TABLE IF EXISTS warehouse.dim_date;
 

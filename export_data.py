@@ -4,7 +4,6 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
-
 def load_data():
     dataframes = []
     files = glob.glob("data/Streaming_History_Audio_*.json")
