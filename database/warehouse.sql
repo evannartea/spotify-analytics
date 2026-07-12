@@ -69,7 +69,7 @@ SELECT DISTINCT
 FROM staging.spotify_streams
 ORDER BY country;
 
--- Create context dim
+-- Create play info dim
 DROP TABLE IF EXISTS warehouse.dim_play_info;
 
 CREATE TABLE warehouse.dim_play_info (
