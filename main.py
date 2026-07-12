@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 
 def load_data():
     dataframes = []
-    files = glob.glob("data/Streaming_History_Audio_*.json")
+    files = glob.glob("data/raw/Streaming_History_Audio_*.json")
 
     for file in files:
         dataframes.append(pd.read_json(file))
@@ -27,12 +27,8 @@ def clean_data(df):
 
     return df
 
-
-def export_to_db(df, database_url):
-    # Connect to PostgreSQL
-    engine = create_engine(database_url)
-
-    # Export DataFrame to PostgreSQL
+# Export DataFrame to PostgreSQL
+def export_to_db(df, engine):
     df.to_sql(
         name="streaming_history",
         con=engine, 
@@ -40,14 +36,30 @@ def export_to_db(df, database_url):
         index=False
     )
 
+# Extract data from PostgreSQL as CSV files
+def extract_from_db(table_name, engine):
+    df = pd.read_sql(f"SELECT * FROM warehouse.{table_name}", engine)
+    
+    file_path = f"data/clean/{table_name}.csv"
+    df.to_csv(file_path, index=False)
+
+    return file_path
+
 def main():
     load_dotenv()
-
     database_url = os.getenv("DATABASE_URL")
+    engine = create_engine(database_url)
+    
     df = load_data()
     df_clean = clean_data(df)
 
-    export_to_db(df_clean, database_url)
+    export_to_db(df_clean, engine)
 
+    extract_from_db("dim_date", engine)
+    extract_from_db("dim_track", engine)
+    extract_from_db("dim_country", engine)
+    extract_from_db("dim_play_info", engine)
+    extract_from_db("fact_streams", engine)
+    
 if __name__ == "__main__":
     main()
