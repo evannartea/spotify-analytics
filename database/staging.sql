@@ -6,7 +6,7 @@ CREATE TABLE staging.spotify_streams AS
 SELECT 
 	ts AS date_played, 
 	ms_played AS milliseconds_played, 
-	conn_country AS country, 
+	conn_country AS country_code, 
 	master_metadata_track_name AS track_name, 
 	master_metadata_album_artist_name AS artist_name, 
 	master_metadata_album_album_name AS album_name, 

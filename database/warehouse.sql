@@ -65,9 +65,9 @@ INSERT INTO warehouse.dim_country (
 	country_code
 )
 SELECT DISTINCT
-	country
+	country_code
 FROM staging.spotify_streams
-ORDER BY country;
+ORDER BY country_code;
 
 -- Create play info dim
 DROP TABLE IF EXISTS warehouse.dim_play_info;
@@ -157,7 +157,7 @@ JOIN warehouse.dim_track t
     AND s.album_name = t.album_name
 
 JOIN warehouse.dim_country c
-    ON s.country = c.country_code
+    ON s.country_code = c.country_code
 
 JOIN warehouse.dim_play_info pi
     ON s.reason_start = pi.reason_start
