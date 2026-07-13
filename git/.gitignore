@@ -1,5 +1,0 @@
-# Spotify Streaming History data
-data/
-
-# Database URL
-*.env
