@@ -23,7 +23,8 @@ SELECT DISTINCT
     EXTRACT(YEAR FROM date_played)::INT AS year,
     EXTRACT(MONTH FROM date_played)::INT AS month,
     EXTRACT(DAY FROM date_played)::INT AS day
-FROM staging.spotify_streams;
+FROM staging.spotify_streams
+ORDER BY full_date;
 
 -- Create track dim
 DROP TABLE IF EXISTS warehouse.dim_track;
