@@ -1,5 +1,5 @@
 <div>
-    <img src="images/Spotify_logo_with_text.svg.png" height="100" width="100">
+    <img src="images/Spotify_logo_with_text.svg.png" height="200" width="200">
 </div>
 
 # Spotify Streaming History Dashboard
