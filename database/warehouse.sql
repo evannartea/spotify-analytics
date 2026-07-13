@@ -54,20 +54,56 @@ FROM staging.spotify_streams
 ORDER BY artist_name, album_name, track_name;
 
 -- Create country dim
+DROP TABLE IF EXISTS warehouse.ref_country;
+
+CREATE TABLE warehouse.ref_country (
+	country_code VARCHAR(10) UNIQUE NOT NULL,
+	country_name VARCHAR(100) UNIQUE NOT NULL
+);
+
+INSERT INTO warehouse.ref_country (
+	country_code,
+	country_name
+)
+
+VALUES
+    ('AE', 'United Arab Emirates'),
+    ('AU', 'Australia'),
+    ('CN', 'China'),
+    ('GB', 'United Kingdom'),
+    ('ID', 'Indonesia'),
+    ('IS', 'Iceland'),
+    ('IT', 'Italy'),
+    ('KH', 'Cambodia'),
+    ('LA', 'Laos'),
+    ('MY', 'Malaysia'),
+    ('PH', 'Philippines'),
+    ('SC', 'Seychelles'),
+    ('TH', 'Thailand'),
+    ('VN', 'Vietnam');
+
 DROP TABLE IF EXISTS warehouse.dim_country;
 
 CREATE TABLE warehouse.dim_country (
 	country_id SERIAL PRIMARY KEY,
-	country_code VARCHAR(10) UNIQUE NOT NULL
+	country_code VARCHAR(10) UNIQUE NOT NULL,
+	country_name VARCHAR(100) UNIQUE NOT NULL,
+
+	FOREIGN KEY(country_code)
+		REFERENCES warehouse.ref_country(country_code)
 );
 
 INSERT INTO warehouse.dim_country (
-	country_code
+	country_code,
+	country_name
 )
 SELECT DISTINCT
-	country_code
-FROM staging.spotify_streams
-ORDER BY country_code;
+	s.country_code,
+	r.country_name
+FROM staging.spotify_streams s
+JOIN warehouse.ref_country r
+	ON s.country_code = r.country_code
+ORDER BY s.country_code;
 
 -- Create play info dim
 DROP TABLE IF EXISTS warehouse.dim_play_info;
