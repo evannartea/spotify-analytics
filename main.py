@@ -13,7 +13,6 @@ def load_data():
 
     return pd.concat(dataframes, ignore_index=True)
 
-
 def clean_data(df):
     # Convert timestamp to datetime
     df["ts"] = pd.to_datetime(
@@ -55,11 +54,15 @@ def main():
 
     export_to_db(df_clean, engine)
 
+    print("Exported successfully!")
+
     extract_from_db("dim_date", engine)
     extract_from_db("dim_track", engine)
     extract_from_db("dim_country", engine)
     extract_from_db("dim_play_info", engine)
     extract_from_db("fact_streams", engine)
     
+    print("Extracted succesfully!")
+
 if __name__ == "__main__":
     main()
