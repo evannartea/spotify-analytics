@@ -1,15 +1,15 @@
-country_id,country_code
-1,AE
-2,AU
-3,CN
-4,GB
-5,ID
-6,IS
-7,IT
-8,KH
-9,LA
-10,MY
-11,PH
-12,SC
-13,TH
-14,VN
+country_id,country_code,country_name
+1,AE,United Arab Emirates
+2,AU,Australia
+3,CN,China
+4,GB,United Kingdom
+5,ID,Indonesia
+6,IS,Iceland
+7,IT,Italy
+8,KH,Cambodia
+9,LA,Laos
+10,MY,Malaysia
+11,PH,Philippines
+12,SC,Seychelles
+13,TH,Thailand
+14,VN,Vietnam
