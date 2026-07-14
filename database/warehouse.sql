@@ -6,23 +6,32 @@ CREATE TABLE warehouse.dim_date (
 	date_id INT PRIMARY KEY,
 	full_date DATE UNIQUE NOT NULL,
 	year INT NOT NULL,
-	month INT NOT NULL,
-	day INT NOT NULL
+	month_number INT NOT NULL,
+	month_name VARCHAR(20) NOT NULL,
+	day_of_month INT NOT NULL,
+	day_of_week INT NOT NULL,
+	day_name VARCHAR(20)
 );
 
 INSERT INTO warehouse.dim_date (
     date_id,
     full_date,
     year,
-    month,
-    day
+    month_number,
+	month_name,
+    day_of_month,
+	day_of_week,
+	day_name
 )
 SELECT DISTINCT
     TO_CHAR(date_played::date, 'YYYYMMDD')::INT AS date_id,
     date_played::date AS full_date,
     EXTRACT(YEAR FROM date_played)::INT AS year,
-    EXTRACT(MONTH FROM date_played)::INT AS month,
-    EXTRACT(DAY FROM date_played)::INT AS day
+    EXTRACT(MONTH FROM date_played)::INT AS month_number,
+	TO_CHAR(date_played::date, 'FMMonth') AS month_name,
+    EXTRACT(DAY FROM date_played)::INT AS day_of_month,
+    EXTRACT(ISODOW FROM date_played)::INT AS day_of_week,
+	TO_CHAR(date_played::date, 'FMDay') AS day_name
 FROM staging.spotify_streams
 ORDER BY full_date;
 
