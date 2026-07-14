@@ -26,6 +26,33 @@ SELECT DISTINCT
 FROM staging.spotify_streams
 ORDER BY full_date;
 
+-- Create time dim
+DROP TABLE IF EXISTS warehouse.dim_time;
+
+CREATE TABLE warehouse.dim_time (
+	time_id INT PRIMARY KEY,
+	hour INT NOT NULL,
+	minute INT NOT NULL,
+	am_pm CHAR(2) NOT NULL
+);
+
+INSERT INTO warehouse.dim_time (
+    time_id,
+    hour,
+    minute,
+    am_pm
+)
+SELECT DISTINCT
+	(EXTRACT(HOUR FROM date_played)::INT * 100 +
+		EXTRACT(MINUTE FROM date_played)::INT) as time_id,
+	EXTRACT(HOUR FROM date_played):: INT AS hour,
+	EXTRACT(MINUTE FROM date_played)::INT AS minute,
+	CASE
+		WHEN EXTRACT(HOUR FROM date_played) < 12 THEN 'AM'
+		ELSE 'PM'
+	END AS am_pm
+FROM staging.spotify_streams;
+
 -- Create track dim
 DROP TABLE IF EXISTS warehouse.dim_track;
 
@@ -58,7 +85,7 @@ ORDER BY artist_name, album_name, track_name;
 DROP TABLE IF EXISTS warehouse.ref_country;
 
 CREATE TABLE warehouse.ref_country (
-	country_code VARCHAR(10) UNIQUE NOT NULL,
+	country_code CHAR(2) UNIQUE NOT NULL,
 	country_name VARCHAR(100) UNIQUE NOT NULL
 );
 
@@ -87,7 +114,7 @@ DROP TABLE IF EXISTS warehouse.dim_country;
 
 CREATE TABLE warehouse.dim_country (
 	country_id SERIAL PRIMARY KEY,
-	country_code VARCHAR(10) UNIQUE NOT NULL,
+	country_code CHAR(2) UNIQUE NOT NULL,
 	country_name VARCHAR(100) UNIQUE NOT NULL,
 
 	FOREIGN KEY(country_code)
@@ -145,6 +172,7 @@ CREATE TABLE warehouse.fact_streams (
 	stream_id BIGSERIAL PRIMARY KEY,
 
 	date_id INT NOT NULL,
+	time_id INT NOT NULL,
 	track_id INT NOT NULL,
 	country_id INT NOT NULL,
 	play_info_id INT NOT NULL,
@@ -154,6 +182,9 @@ CREATE TABLE warehouse.fact_streams (
 
 	FOREIGN KEY(date_id)
 		REFERENCES warehouse.dim_date(date_id),
+
+	FOREIGN KEY(time_id)
+		REFERENCES warehouse.dim_time(time_id),
 
 	FOREIGN KEY(track_id)
 		REFERENCES warehouse.dim_track(track_id),
@@ -167,6 +198,7 @@ CREATE TABLE warehouse.fact_streams (
 
 INSERT INTO warehouse.fact_streams (
 	date_id,
+	time_id,
 	track_id,
 	country_id,
 	play_info_id,
@@ -177,7 +209,8 @@ INSERT INTO warehouse.fact_streams (
 
 SELECT
 	d.date_id,
-	t.track_id,
+	ti.time_id,
+	tr.track_id,
 	c.country_id,
 	pi.play_info_id,
 
@@ -188,10 +221,16 @@ FROM staging.spotify_streams s
 JOIN warehouse.dim_date d
 	ON s.date_played::date = d.full_date
 
-JOIN warehouse.dim_track t
-    ON s.track_name = t.track_name
-    AND s.artist_name = t.artist_name
-    AND s.album_name = t.album_name
+JOIN warehouse.dim_time ti
+	ON (
+		EXTRACT(HOUR FROM s.date_played)::INT * 100 +
+			EXTRACT (MINUTE FROM s.date_played)::INT
+	) = ti.time_id
+
+JOIN warehouse.dim_track tr
+    ON s.track_name = tr.track_name
+    AND s.artist_name = tr.artist_name
+    AND s.album_name = tr.album_name
 
 JOIN warehouse.dim_country c
     ON s.country_code = c.country_code
