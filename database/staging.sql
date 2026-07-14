@@ -16,4 +16,7 @@ SELECT
 	skipped, 
 	mins_played
 FROM public.streaming_history
+WHERE master_metadata_track_name IS NOT NULL
+	AND master_metadata_album_artist_name IS NOT NULL
+	AND master_metadata_album_album_name IS NOT NULL
 ORDER BY ts ASC;
