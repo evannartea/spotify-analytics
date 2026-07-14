@@ -33,24 +33,27 @@ CREATE TABLE warehouse.dim_time (
 	time_id INT PRIMARY KEY,
 	hour INT NOT NULL,
 	minute INT NOT NULL,
-	am_pm CHAR(2) NOT NULL
+	time_of_day VARCHAR(10) NOT NULL
 );
 
 INSERT INTO warehouse.dim_time (
     time_id,
     hour,
-    minute,
-    am_pm
+	minute,
+    time_of_day
 )
 SELECT DISTINCT
 	(EXTRACT(HOUR FROM date_played)::INT * 100 +
 		EXTRACT(MINUTE FROM date_played)::INT) as time_id,
 	EXTRACT(HOUR FROM date_played):: INT AS hour,
-	EXTRACT(MINUTE FROM date_played)::INT AS minute,
+	EXTRACT(MINUTE FROM date_played):: INT AS minute,
 	CASE
-		WHEN EXTRACT(HOUR FROM date_played) < 12 THEN 'AM'
-		ELSE 'PM'
-	END AS am_pm
+		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 6 and 11 THEN 'Morning'
+		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 12 and 17 THEN 'Afternoon'
+		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 18 and 23 THEN 'Evening'
+		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 0 and 5 THEN 'Night'
+		ELSE 'Unknown'
+	END AS time_of_day
 FROM staging.spotify_streams;
 
 -- Create track dim
@@ -240,5 +243,3 @@ JOIN warehouse.dim_play_info pi
     AND s.reason_end = pi.reason_end
     AND s.shuffle = pi.shuffle
     AND s.skipped = pi.skipped;
-
-
