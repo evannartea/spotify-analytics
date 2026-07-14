@@ -57,6 +57,7 @@ def main():
     print("Exported successfully!")
 
     extract_from_db("dim_date", engine)
+    extract_from_db("dim_time", engine)
     extract_from_db("dim_track", engine)
     extract_from_db("dim_country", engine)
     extract_from_db("dim_play_info", engine)
