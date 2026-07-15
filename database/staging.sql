@@ -1,8 +1,8 @@
 -- STAGING
--- Filter raw data
-DROP TABLE IF EXISTS staging.spotify_streams;
+-- Filter raw streaming history data
+DROP TABLE IF EXISTS staging.streaming_history;
 
-CREATE TABLE staging.spotify_streams AS
+CREATE TABLE staging.streaming_history AS
 SELECT 
 	ts::timestamp AS date_played, 
 	ms_played AS milliseconds_played, 
@@ -20,3 +20,5 @@ WHERE master_metadata_track_name IS NOT NULL
 	AND master_metadata_album_artist_name IS NOT NULL
 	AND master_metadata_album_album_name IS NOT NULL
 ORDER BY ts ASC;
+
+-- Filter genres data
