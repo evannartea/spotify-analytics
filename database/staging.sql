@@ -22,3 +22,19 @@ WHERE master_metadata_track_name IS NOT NULL
 ORDER BY ts ASC;
 
 -- Filter genres data
+DROP TABLE IF EXISTS staging.artist_genres;
+
+CREATE TABLE staging.artist_genres AS
+SELECT 
+	artist_name,
+    regexp_replace(
+		lower(
+			regexp_replace(genre, '[-_\s]', '', 'g')
+		),
+		'^(.*)$',
+		'\1'
+	) AS normalised_genre,
+	weight
+FROM public.artist_genres
+WHERE weight > 50
+ORDER BY artist_name ASC;
