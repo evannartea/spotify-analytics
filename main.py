@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from pipeline import load_data, export_to_db, extract_from_db
+from functions.elt import load_data, export_to_db, extract_from_db
 
 def main():
     load_dotenv()
