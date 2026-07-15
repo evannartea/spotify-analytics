@@ -32,7 +32,7 @@ SELECT DISTINCT
     EXTRACT(DAY FROM date_played)::INT AS day_of_month,
     EXTRACT(ISODOW FROM date_played)::INT AS day_of_week,
 	TO_CHAR(date_played::date, 'FMDay') AS day_name
-FROM staging.spotify_streams
+FROM staging.streaming_history
 ORDER BY full_date;
 
 -- Create time dim
@@ -63,7 +63,7 @@ SELECT DISTINCT
 		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 0 and 5 THEN 'Night'
 		ELSE 'Unknown'
 	END AS time_of_day
-FROM staging.spotify_streams;
+FROM staging.streaming_history;
 
 -- Create track dim
 DROP TABLE IF EXISTS warehouse.dim_track;
@@ -90,7 +90,7 @@ SELECT DISTINCT
 	track_name,
 	artist_name,
 	album_name
-FROM staging.spotify_streams
+FROM staging.streaming_history
 ORDER BY artist_name, album_name, track_name;
 
 -- Create country dim
@@ -140,7 +140,7 @@ INSERT INTO warehouse.dim_country (
 SELECT DISTINCT
 	s.country_code,
 	r.country_name
-FROM staging.spotify_streams s
+FROM staging.streaming_history s
 JOIN warehouse.ref_country r
 	ON s.country_code = r.country_code
 ORDER BY s.country_code;
@@ -174,7 +174,7 @@ SELECT DISTINCT
 	reason_end,
 	shuffle,
 	skipped
-FROM staging.spotify_streams
+FROM staging.streaming_history
 ORDER BY reason_start, reason_end;
 
 -- Create fact table
@@ -228,7 +228,7 @@ SELECT
 
 	s.milliseconds_played,
 	s.mins_played
-FROM staging.spotify_streams s
+FROM staging.streaming_history s
 
 JOIN warehouse.dim_date d
 	ON s.date_played::date = d.full_date
