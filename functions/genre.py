@@ -1,6 +1,6 @@
-import glob
 import os
-import json
+import glob
+import time
 import requests
 import pandas as pd
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ def load_data():
     return pd.concat(dataframes, ignore_index=True)
 
 
-def get_genres(artist_name, api_key):
+def get_genres(artist_name, api_key, session):
     url = f"https://ws.audioscrobbler.com/2.0/"
     params = {
         "method": "artist.gettoptags",
@@ -24,7 +24,6 @@ def get_genres(artist_name, api_key):
         "format": "json"
     }
 
-    session = requests.Session()
     response = session.get(url, params=params, timeout=10)
     data = response.json()
 
@@ -46,13 +45,15 @@ def main():
 
     load_dotenv()
     api_key = os.getenv("API_KEY")
-    
-    artists = df["master_metadata_album_artist_name"].dropna().unique()
+
+    session = requests.Session()
+    artists = sorted(df["master_metadata_album_artist_name"].dropna().unique())
 
     rows = []
     
     for artist in artists:
-        genres = get_genres(artist, api_key)
+        genres = get_genres(artist, api_key, session)
+        time.sleep(0.2)
         
         for genre in genres:
             rows.append(
@@ -64,8 +65,9 @@ def main():
             )
 
     df_genre = pd.DataFrame(rows)
+    df_genre.to_csv("data/raw/genres.csv", index=False)
 
-    print(df_genre.head(1))
-    
+    print("Completed!")
+
 if __name__ == "__main__":
     main()
