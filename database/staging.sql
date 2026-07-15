@@ -4,8 +4,9 @@ DROP TABLE IF EXISTS staging.spotify_streams;
 
 CREATE TABLE staging.spotify_streams AS
 SELECT 
-	ts AS date_played, 
+	ts::timestamp AS date_played, 
 	ms_played AS milliseconds_played, 
+	ms_played::decimal / 60000 AS mins_played,
 	conn_country AS country_code, 
 	master_metadata_track_name AS track_name, 
 	master_metadata_album_artist_name AS artist_name, 
@@ -13,8 +14,7 @@ SELECT
 	reason_start, 
 	reason_end, 
 	shuffle, 
-	skipped, 
-	mins_played
+	skipped
 FROM public.streaming_history
 WHERE master_metadata_track_name IS NOT NULL
 	AND master_metadata_album_artist_name IS NOT NULL
