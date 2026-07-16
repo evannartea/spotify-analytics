@@ -42,16 +42,24 @@ filtered_genres AS (
     SELECT
         artist_name,
         normalised_genre,
+        SUM(weight) AS weight
+    FROM accepted_genres
+    WHERE genre_count >= 30
+    GROUP BY artist_name, normalised_genre
+),
+weighted_genres AS (
+    SELECT
+        artist_name,
+        normalised_genre,
         weight,
         SUM(weight) OVER (
             PARTITION BY artist_name
         ) AS artist_total_weight
-    FROM accepted_genres
-    WHERE genre_count >= 30
+    FROM filtered_genres
 )
 SELECT
     artist_name,
     normalised_genre,
     ROUND((weight / artist_total_weight)::numeric, 2) AS weight
-FROM filtered_genres
+FROM weighted_genres
 ORDER BY artist_name;
