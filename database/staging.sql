@@ -19,7 +19,7 @@ FROM public.streaming_history
 WHERE master_metadata_track_name IS NOT NULL
 	AND master_metadata_album_artist_name IS NOT NULL
 	AND master_metadata_album_album_name IS NOT NULL
-	AND ts > '2022-01-01 00:00:00'
+	AND ts >= '2022-01-01 00:00:00'
 ORDER BY ts ASC;
 
 -- Filter genres data
