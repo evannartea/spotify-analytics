@@ -23,14 +23,11 @@ WHERE master_metadata_track_name IS NOT NULL
 ORDER BY ts ASC;
 
 -- Filter genres data
+-- Written by ChatGPT
 DROP TABLE IF EXISTS staging.artist_genres;
 
 CREATE TABLE staging.artist_genres AS
-SELECT
-    t.artist_name,
-    t.normalised_genre,
-    t.weight
-FROM (
+WITH accepted_genres AS (
     SELECT
         artist_name,
         lower(regexp_replace(genre, '[-_\s]', '', 'g')) AS normalised_genre,
@@ -40,6 +37,21 @@ FROM (
         ) AS genre_count
     FROM public.artist_genres
     WHERE weight > 50
-) t
-WHERE t.genre_count >= 30
-ORDER BY t.artist_name ASC;
+),
+filtered_genres AS (
+    SELECT
+        artist_name,
+        normalised_genre,
+        weight,
+        SUM(weight) OVER (
+            PARTITION BY artist_name
+        ) AS artist_total_weight
+    FROM accepted_genres
+    WHERE genre_count >= 30
+)
+SELECT
+    artist_name,
+    normalised_genre,
+    ROUND((weight / artist_total_weight)::numeric, 2) AS weight
+FROM filtered_genres
+ORDER BY artist_name;
