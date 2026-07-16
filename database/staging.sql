@@ -36,7 +36,7 @@ WITH accepted_genres AS (
             PARTITION BY lower(regexp_replace(genre, '[-_\s]', '', 'g'))
         ) AS genre_count
     FROM public.artist_genres
-    WHERE weight > 50
+    WHERE weight >= 50
 ),
 filtered_genres AS (
     SELECT
