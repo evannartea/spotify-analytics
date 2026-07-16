@@ -10,7 +10,7 @@ CREATE TABLE warehouse.dim_date (
 	month_name VARCHAR(20) NOT NULL,
 	day_of_month INT NOT NULL,
 	day_of_week INT NOT NULL,
-	day_name VARCHAR(20)
+	day_name VARCHAR(20) NOT NULL
 );
 
 INSERT INTO warehouse.dim_date (
@@ -54,8 +54,8 @@ INSERT INTO warehouse.dim_time (
 SELECT DISTINCT
 	(EXTRACT(HOUR FROM date_played)::INT * 100 +
 		EXTRACT(MINUTE FROM date_played)::INT) as time_id,
-	EXTRACT(HOUR FROM date_played):: INT AS hour,
-	EXTRACT(MINUTE FROM date_played):: INT AS minute,
+	EXTRACT(HOUR FROM date_played)::INT AS hour,
+	EXTRACT(MINUTE FROM date_played)::INT AS minute,
 	CASE
 		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 6 and 11 THEN 'Morning'
 		WHEN EXTRACT(HOUR FROM date_played) BETWEEN 12 and 17 THEN 'Afternoon'
@@ -65,33 +65,96 @@ SELECT DISTINCT
 	END AS time_of_day
 FROM staging.streaming_history;
 
+-- Create artist dim
+DROP TABLE IF EXISTS warehouse.dim_artist;
+
+CREATE TABLE warehouse.dim_artist (
+	artist_id SERIAL PRIMARY KEY,
+	artist_name VARCHAR(255) NOT NULL
+);
+
+INSERT INTO warehouse.dim_artist (
+	artist_name
+)
+SELECT DISTINCT
+	artist_name
+FROM staging.streaming_history
+ORDER BY artist_name;
+
 -- Create track dim
 DROP TABLE IF EXISTS warehouse.dim_track;
 
 CREATE TABLE warehouse.dim_track (
 	track_id SERIAL PRIMARY KEY,
 	track_name VARCHAR(255),
-	artist_name VARCHAR(255),
+	artist_id INT NOT NULL REFERENCES warehouse.dim_artist(artist_id),
 	album_name VARCHAR (255),
 
 	UNIQUE (
 		track_name,
-		artist_name,
+		artist_id,
 		album_name
 	)
 );
 
 INSERT INTO warehouse.dim_track (
 	track_name,
-	artist_name,
+	artist_id,
 	album_name
 )
 SELECT DISTINCT
-	track_name,
-	artist_name,
-	album_name
-FROM staging.streaming_history
-ORDER BY artist_name, album_name, track_name;
+	sh.track_name,
+	da.artist_id,
+	sh.album_name
+FROM staging.streaming_history sh
+JOIN warehouse.dim_artist da
+	ON sh.artist_name = da.artist_name
+ORDER BY da.artist_id, sh.album_name, sh.track_name;
+
+-- Create genre dim
+DROP TABLE IF EXISTS warehouse.dim_genre;
+
+CREATE TABLE warehouse.dim_genre (
+	genre_id SERIAL PRIMARY KEY,
+	normalised_genre VARCHAR(30) NOT NULL
+);
+
+INSERT INTO warehouse.dim_genre (
+	normalised_genre
+)
+SELECT DISTINCT
+	normalised_genre
+FROM staging.artist_genres;
+
+-- Create bridge artist genre
+DROP TABLE IF EXISTS warehouse.bridge_artist_genre;
+
+CREATE TABLE warehouse.bridge_artist_genre (
+	artist_id INT NOT NULL,
+	genre_id INT NOT NULL,
+
+	PRIMARY KEY (artist_id, genre_id),
+
+	FOREIGN KEY (artist_id)
+		REFERENCES warehouse.dim_artist(artist_id),
+
+	FOREIGN KEY (genre_id)
+		REFERENCES warehouse.dim_genre(genre_id)
+);
+
+INSERT INTO warehouse.bridge_artist_genre (
+	artist_id,
+	genre_id
+)
+SELECT DISTINCT
+	da.artist_id,
+	dg.genre_id
+FROM staging.artist_genres ag
+JOIN warehouse.dim_artist da
+	ON ag.artist_name = da.artist_name
+JOIN warehouse.dim_genre dg
+	ON ag.normalised_genre = dg.normalised_genre
+ORDER BY da.artist_id, dg.genre_id;
 
 -- Create country dim
 DROP TABLE IF EXISTS warehouse.ref_country;
@@ -239,9 +302,12 @@ JOIN warehouse.dim_time ti
 			EXTRACT (MINUTE FROM s.date_played)::INT
 	) = ti.time_id
 
+JOIN warehouse.dim_artist a
+	ON s.artist_name = a.artist_name
+
 JOIN warehouse.dim_track tr
     ON s.track_name = tr.track_name
-    AND s.artist_name = tr.artist_name
+    AND tr.artist_id = a.artist_id
     AND s.album_name = tr.album_name
 
 JOIN warehouse.dim_country c
