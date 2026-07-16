@@ -1,5 +1,5 @@
-# Spotify Streaming History data
+# Spotify streaming history data
 data/
 
-# Database URL
+# Top secret information
 *.env
