@@ -28,10 +28,8 @@
 
 ### 📄 Credits
 #
-**Author:** Evan Nartea
+**Author:** Evan Nartea<br>
+**Contributors:** Evan Nartea<br>
 <br>
-**Contributors:** Evan Nartea
-<br>
-<br>
-Spotify data: Spotify → Account → Security and privacy → Account privacy → Download your data → Extended streaming history
+Spotify data: Spotify → Account → Security and privacy → Account privacy → Download your data → Extended streaming history<br>
 Genre data: https://www.last.fm/api/show/artist.getTopTags
