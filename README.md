@@ -10,15 +10,12 @@
 
 ### 📌 Project Overview
 #
+Dashboard has been posted on <a href="https://public.tableau.com/shared/Q9K7TCD5D?:display_count=n&:origin=viz_share_link">Tableau Public</a>
 
 ### 📷 Examples
 #
-<a href="https://public.tableau.com/views/SpotifyDashboard_17842213345050/SpotifyDashboard?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link">
-    <img src="images/dashboard_screenshot.png" alt="Dashboard Screenshot" height="982" width="1710">
-</a>
-<a href="https://public.tableau.com/views/SpotifyDashboard_17842213345050/SpotifyDashboard?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link">
-    <img src="images/dashboard_filtered_screenshot.png" alt="Dashboard FilteredScreenshot" height="982" width="1710">
-</a>
+<img src="images/dashboard_screenshot.png" alt="Dashboard Screenshot" height="982" width="1710">
+<img src="images/dashboard_filtered_screenshot.png" alt="Dashboard Filtered Screenshot" height="982" width="1710">
 
 ### 🎯 What I Learned
 #
