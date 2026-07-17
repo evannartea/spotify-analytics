@@ -29,7 +29,7 @@ The interactive dashboard is available on <a href="https://public.tableau.com/vi
 - Used Python to read and concatenate multiple JSON files into a single dataframe.
 - Learned how to set up and configure a PostgreSQL server.
 - Improved my understanding of data warehousing by implementing a star schema using SQL to create fact and dimension tables.
-- Gained experience developing an interactive dashboards in Tableau.
+- Gained experience developing an interactive dashboard in Tableau.
 
 ### 📝 Notes
 #
