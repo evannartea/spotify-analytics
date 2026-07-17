@@ -16,7 +16,12 @@ The interactive dashboard is available on <a href="https://public.tableau.com/vi
 
 ### 📷 Examples
 #
-<img src="images/dashboard_screenshot.png" alt="Dashboard Screenshot" height="982" width="1710">
+**Original View:**<br>
+<br>
+<img src="images/dashboard_screenshot.png" alt="Dashboard Screenshot" height="982" width="1710"><br>
+<br>
+**Filtered View:**<br>
+<br>
 <img src="images/dashboard_filtered_screenshot.png" alt="Dashboard Filtered Screenshot" height="982" width="1710">
 
 ### 🎯 What I Learned
