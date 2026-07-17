@@ -12,7 +12,7 @@
 #
 An end-to-end data analaytics project that uses an ELT pipeline to process and analyse personal Spotify streaming history data on Tableau. This project covers a complete analytics workflow from data extraction, loading and transforming in a database, and dashboard development.<br>
 <br>
-The interactive dashboard is available on <a href="https://public.tableau.com/shared/Q9K7TCD5D?:display_count=n&:origin=viz_share_link">Tableau Public</a>.
+The interactive dashboard is available on <a href="https://public.tableau.com/views/SpotifyDashboard_17842213345050/SpotifyDashboard?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link">Tableau Public</a>.
 
 ### 📷 Examples
 #
