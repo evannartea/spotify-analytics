@@ -34,6 +34,8 @@ The interactive dashboard is available on <a href="https://public.tableau.com/vi
 ### 📝 Notes
 #
 - All data prior to 2022 was removed, as there were significant gaps of streaming history data between 2016 and 2022 which impacted the visualisation on Tableau. This excluded 61 rows totalling 49 minutes of listening activity recorded before the Spotify Premium subscription started in 2022.
+- The genre data was likely the least reliable component, as Last.fm's `artist.getTopTags` API endpoint was used as a proxy for artist genres. These are user-generated keywords and are not always strictly defined genres, .e.g, "Japanese" or "Soundtrack". Tags appearing fewer than 30 times were filtered out. This approach was inspired by an <a href="https://dev.to/romdevin/combining-spotify-playlist-data-with-lastfm-genres-for-comprehensive-json-output-2k2j">article by Roman Dubrovin</a> and was necessary since Spotify has deprecated its genres endpoint in the Web API.
+- Last.fm's API endpoint also provides a `count` attribute defined as "a weighted count of how often the tag was applied, with a maximum of 100".
 
 ### 📄 Credits
 #
