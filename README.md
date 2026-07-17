@@ -23,6 +23,8 @@ The interactive dashboard is available on <a href="https://public.tableau.com/vi
 #
 - Used Python to read and concatenate multiple JSON files into a single dataframe.
 - Set up and configured a PostgreSQL server.
+- Implemented a star schema data warehouse by transforming raw data into fact and dimension tables using SQL.
+- Developed an interactive Tableau dashboard to visualise listening trends and user behaviour.
 
 ### 📝 Notes
 #
