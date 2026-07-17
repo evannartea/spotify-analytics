@@ -33,7 +33,7 @@ The interactive dashboard is available on <a href="https://public.tableau.com/vi
 
 ### 📝 Notes
 #
-
+- All data prior to 2022 was removed, as there were significant gaps of streaming history data between 2016 and 2022 which impacted the visualisation on Tableau. This excluded 61 rows totalling 49 minutes of listening activity recorded before the Spotify Premium subscription started in 2022.
 
 ### 📄 Credits
 #
