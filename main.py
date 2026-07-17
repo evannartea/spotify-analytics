@@ -12,8 +12,8 @@ def main():
     df_streams = load_data()
     df_genre = pd.read_csv("data/raw/genres.csv")
 
-    export_to_db("artist_genres", df_genre, engine)
     export_to_db("streaming_history", df_streams, engine)
+    export_to_db("artist_genres", df_genre, engine)
 
     print("Exported successfully!")
 
