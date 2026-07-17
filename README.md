@@ -19,3 +19,19 @@
 <a href="https://public.tableau.com/views/SpotifyDashboard_17842213345050/SpotifyDashboard?:language=en-GB&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link">
     <img src="images/dashboard_filtered_screenshot.png" alt="Dashboard FilteredScreenshot" height="982" width="1710">
 </a>
+
+### 🎯 What I Learned
+#
+
+### 📝 Notes
+#
+
+### 📄 Credits
+#
+**Author:** Evan Nartea
+<br>
+**Contributors:** Evan Nartea
+<br>
+<br>
+Spotify data: Spotify → Account → Security and privacy → Account privacy → Download your data → Extended streaming history
+Genre data: https://www.last.fm/api/show/artist.getTopTags
