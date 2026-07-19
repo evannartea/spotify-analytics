@@ -30,7 +30,6 @@ def get_genres(artist_name, api_key, session):
 
     return result
 
-
 df = load_data()
 
 load_dotenv()
